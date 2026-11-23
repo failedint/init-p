@@ -1,0 +1,6 @@
+creator: Evan Neukam 
+  github  failedint/itsa_complaint
+  gmail   evanneukam7@gmail.com
+  name    Evan Neukam
+
+contributors: NA
