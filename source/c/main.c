@@ -8,12 +8,12 @@
 char project_name[50];
 char current_cmd[Lsize];
 
-char *get_input(char str_name[], size_t size) {
-    fgets(str_name, size, stdin);
-    size_t len = strlen(str_name);
-    if (len > 0 && str_name[len - 1] == '\n')
-        str_name[len - 1] = '\0';
-    return str_name;
+char *get_input(char string_name[], size_t size) {
+    fgets(string_name, size, stdin);
+    size_t length = strlen(string_name);
+    if (length > 0 && string_name[length - 1] == '\n')
+        string_name[length - 1] = '\0';
+    return string_name;
 }
 
 char *whitespace_elim(char string[]) {
