@@ -1,8 +1,8 @@
+// TODO, add git and multi language support.
+// DO NOT TOUCH WORKING PARTS.
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <strings.h>
 #define Lsize 128
 
 char project_name[50];
@@ -43,14 +43,14 @@ void populate_file_tree() {
     FILE* file = fopen("starterfile.sh", "a");
     if (file) {
         fprintf(file, "cd %s\n", project_name);
-        fprintf(file, "mkdir -p source include build credit source/c\n");
+        fprintf(file, "mkdir -p source include build credit source/c build/hints\n");
         fprintf(file, "touch source/c/main.c credit/credits.txt build/buildfile.sh\n");
         fclose(file);
     }
 }
 
 int main(int argc, char *argv[]) {
-    char question_answer[50];
+    char question_answer[256];
 
     if (argc >= 2) {
         if (strcmp(argv[1], "-h") == 0) {
@@ -65,13 +65,13 @@ int main(int argc, char *argv[]) {
             exit(0);
         }
         else if (strcmp(argv[1], "--run") == 0) {
-            FILE *cfg = fopen(".projname", "r");
-            if (!cfg) {
-                printf("Error: No project configured in this directory. Run the tool without arguments first.\n");
+            FILE *name = fopen("build/hints/run", "r");
+            if (!name) {
+                printf("Error: No project is in this directory. Run the tool first.\n");
                 exit(1);
             }
-            fgets(project_name, sizeof(project_name), cfg);
-            fclose(cfg);
+            fgets(project_name, sizeof(project_name), name);
+            fclose(name);
 
             project_name[strcspn(project_name, "\n")] = 0;
 
@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
                 snprintf(run_cmd, sizeof(run_cmd), "./build/%s", project_name);
                 system(run_cmd);
             } else {
-                printf("Build failed. Aborting run.\n");
+                printf("Build unfortunatly failed, try again if this is a repeated error look at your build/buildfile.sh\n");
             }
             exit(0);
         }
@@ -114,14 +114,14 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    FILE *cfg = fopen(".projname", "w");
-    if (cfg) {
-        fprintf(cfg, "%s\n", project_name);
-        fclose(cfg);
-    }
-
     cmd_writer(project_name, Lsize);
     populate_file_tree();
+
+    FILE* run_hints = fopen("starterfile.sh", "a");
+    if (run_hints) {
+        fprintf(run_hints, "echo \"%s\" > build/hints/run\n", project_name);
+        fclose(run_hints);
+    }
 
     puts("Would you like a README.md (y/n)?\t");
     get_input(question_answer, sizeof(question_answer));
@@ -137,14 +137,14 @@ int main(int argc, char *argv[]) {
     get_input(question_answer, sizeof(question_answer));
 
     if (question_answer[0] == 'y' || question_answer[0] == 'Y') {
-        puts("Which license would you like to use?");
-        puts("  1) MIT");
-        puts("  2) Apache 2.0");
-        puts("  3) GNU GPLv3");
-        puts("  4) BSD 2-Clause");
-        puts("  5) ISC");
-        puts("  6) custom (import from file)");
-        puts("Enter your choice (1-6) or type the license name:\t");
+        puts("What license would you like to use?");
+        puts("1: MIT");
+        puts("2: Apache 2.0");
+        puts("3: GNU GPLv3");
+        puts("4: BSD 2-Clause");
+        puts("5: ISC");
+        puts("6: custom - \"or import from file\"");
+        puts("Enter your choice (1-6) or type a simplefied form of the license name:\t");
 
         get_input(question_answer, sizeof(question_answer));
 
@@ -152,33 +152,33 @@ int main(int argc, char *argv[]) {
         if (file != NULL) {
             fprintf(file, "mkdir -p copyright\n");
 
-            if (strcmp(question_answer, "1") == 0 || strcasecmp(question_answer, "mit") == 0) {
+            if (strcmp(question_answer, "1") == 0 || strcmp(question_answer, "mit") == 0) {
                 fprintf(file, "curl -sL https://api.github.com/licenses/mit | jq -r '.body' > copyright/LICENSE.txt\n");
             }
-            else if (strcmp(question_answer, "2") == 0 || strcasecmp(question_answer, "apache-2.0") == 0) {
+            else if (strcmp(question_answer, "2") == 0 || strcmp(question_answer, "apache-2.0") == 0) {
                 fprintf(file, "curl -sL https://api.github.com/licenses/apache-2.0 | jq -r '.body' > copyright/LICENSE.txt\n");
             }
-            else if (strcmp(question_answer, "3") == 0 || strcasecmp(question_answer, "gpl-3.0") == 0) {
+            else if (strcmp(question_answer, "3") == 0 || strcmp(question_answer, "gpl-3.0") == 0) {
                 fprintf(file, "curl -sL https://api.github.com/licenses/gpl-3.0 | jq -r '.body' > copyright/LICENSE.txt\n");
             }
-            else if (strcmp(question_answer, "4") == 0 || strcasecmp(question_answer, "bsd-2-clause") == 0) {
+            else if (strcmp(question_answer, "4") == 0 || strcmp(question_answer, "bsd-2-clause") == 0) {
                 fprintf(file, "curl -sL https://api.github.com/licenses/bsd-2-clause | jq -r '.body' > copyright/LICENSE.txt\n");
             }
-            else if (strcmp(question_answer, "5") == 0 || strcasecmp(question_answer, "isc") == 0) {
+            else if (strcmp(question_answer, "5") == 0 || strcmp(question_answer, "isc") == 0) {
                 fprintf(file, "curl -sL https://api.github.com/licenses/isc | jq -r '.body' > copyright/LICENSE.txt\n");
             }
             else {
-                puts("Can you give me a file to import custom license from (Full file location):\t");
+                puts("May you please give me a file to import custom license from (Full file location):\t");
                 get_input(question_answer, sizeof(question_answer));
                 fprintf(file, "cp \"%s\" copyright/LICENSE.txt\n", question_answer);
             }
             fclose(file);
         } else {
-            puts("Error opening starterfile.sh for writing.");
+            puts("Error opening starterfile.sh to writ einto\n.");
         }
     }
 
-    printf("Enter your wanted way of compiling, or leave blank for default: default \"cc source/c/*.c -o build/%s\"\n", project_name);
+    printf("Enter your wanted way of compiling, or leave blank for default: default = \"cc source/c/*.c -o build/%s\"\n", project_name);
     get_input(question_answer, sizeof(question_answer));
 
     FILE* file = fopen("starterfile.sh", "a");
