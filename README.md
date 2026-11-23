@@ -6,12 +6,11 @@ A fun project of mine inspired from boredom, it's for the C programming language
  sh build/buildfile.sh
 
  ## Usage
- init-p "project_name"
- init-p #Go through the guide
- init-p --build #builds the project, have to be inside the main folder.
- init-p --run #builds and run's the project
+ init-p "project_name" \
+ init-p #Go through the guide \
+ init-p --build #builds the project, have to be inside the main folder. \
+ init-p --run #builds and run's the project \
 
  for any help use, init-p -h
 
-
- > Note that AI was used in repetitive parts such as contiuisly using strcmp and generating the help list. along with helping me use git since im bad at git.
+> Use however you like under the MIT liscense
