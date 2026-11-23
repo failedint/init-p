@@ -2,7 +2,7 @@
 A fun project of mine inspired from boredom, it's for the C programming language but with a little editing it can be for more, also it's for initialization of a project folder and can act like a build system.
 
 ## Installation guide.
- git clone https:github.com/failedint/init-p/ init-p && cd init-p \
+ git clone https://github.com/failedint/init-p/ init-p && cd init-p \
  sh /build/buildfile.sh
 
  ## Usage
