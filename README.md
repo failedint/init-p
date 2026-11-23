@@ -3,7 +3,7 @@ A fun project of mine inspired from boredom, it's for the C programming language
 
 ## Installation guide.
  git clone https://github.com/failedint/init-p/ init-p && cd init-p \
- sh /build/buildfile.sh
+ sh build/buildfile.sh
 
  ## Usage
  init-p "project_name"
